@@ -69,6 +69,23 @@ h3  {
   background-color: #a8dadc;
   color: #1d3557;
 }
+
+.correctBtn {
+  background-color: green;
+  color: white;
+  margin-left: 20px;
+  text-decoration: none;
+  padding: 19px 36px;
+  text-align: center;
+  border-radius: 8px;
+  display: inline-block;
+  font-size: 150%;
+  transition-duration: 0.4s;
+}
+
+.corr
+
+
   ol, ul {
     list-style: none;
   }

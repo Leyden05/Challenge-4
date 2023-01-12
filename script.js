@@ -1,36 +1,40 @@
 // user is presented with 5 questions - array of objects
 var myQuestions = [
   {
-    question: "Who is the first boss you fight in Dark Souls 3",
-    choices: ["Dark Eater Midir", "Ludex Gundyr", "The Crystal Sage", "Ornstein and Smough"],
+    question: "Who is the first boss you fight in Dark Souls 3?",
+    choices: ["Dark Eater Midir", "Ornstein and Smough" , "The Crystal Sage","Ludex Gundyr"],
     answer: "Ludex Gundyr"
   },
   {
-    question: "Who is the second boss you fight in Dark Souls 3",
-    choices: ["Rotten Greatwood", "Ludex Gundyr", "The Crystal Sage", "Ornstein and Smough"],
-    answer: "Rotten Greatwood"
+    question: "Where do you discover Unbreakable Patches in Dark Souls 3?",
+    choices: ["The Boreal Valley", "High Wall of Lothric", "Painted World of Ariandel", "Cathedral of the Deep"],
+    answer: "Cathedral of the Deep"
   },
   {
-    question: "Who is the third boss you fight in Dark Souls 3",
-    choices: ["Dark Eater Midir", "Ludex Gundyr", "The Crystal Sage", "Ornstein and Smough"],
-    answer: "The Crystal Sage"
+    question: "Who is NOT a lord of cinder?",
+    choices: ["Abyss Watchers", "Yhorm the Giant", "Aldrich, Saint of the Deep", "Ornstein and Smough"],
+    answer: "Ornstein and Smough"
   }
 ]
 
 var startBtn = document.querySelector("#startBtn")
 var startContainer = document.querySelector("#startContainer")
 var questionsContainer = document.querySelector("#questions")
+var timerContainer = document.querySelector("#timerContainer")
 var questionsIndex = 0
+var questionPoints = 0
+
 
 startBtn.addEventListener("click", startGame)
 
 function startGame() {
   startContainer.classList.add("hidden");
-  // startTimer();
+  setTime();
   generateQuestions();
 }
 
-function generateQuestions() {
+function generateQuestions() { 
+  questionsContainer.innerHTML = ''
   var questionList = document.createElement("ul")
   questionsContainer.append(questionList)
 
@@ -43,19 +47,52 @@ function generateQuestions() {
     choiceBtn.textContent = myQuestions[questionsIndex].choices[i]
     choiceBtn.setAttribute('class', 'btn')
     questionList.append(choiceBtn)
-
     choiceBtn.addEventListener('click', function (event) {
       // console.log(event.target.textContent)
       if (event.target.textContent === myQuestions[questionsIndex].answer) {
         console.log('correct')
+        questionPoints += 5
+        choiceBtn.setAttribute('class', 'correctBtn');
+        console.log(questionPoints)
+        // console.log(questionsIndex)
       } else {
         console.log('incorrect')
+        secondsLeft -= 5
+        console.log(questionPoints)
+        // console.log(questionsIndex)
       }
       questionsIndex++
+      if (questionsIndex < myQuestions.length) { 
+        setTimeout(function () {
+          generateQuestions ();
+        }, 500)
+      } else {
+        window.location.assign('./highscores.html')
+        localStorage.setItem('scores', questionPoints);
+      }
     })
   }
-
+  
 }
+
+
+var secondsLeft = 45;
+
+function setTime() {
+  var timerInterval = setInterval(function() {
+    console.log(secondsLeft)
+    secondsLeft--;
+    timerContainer.textContent = secondsLeft
+
+    if (secondsLeft <=0) {
+      clearInterval(timerInterval);
+      window.location.assign("./highscores.html")
+      localStorage.setItem('scores', questionPoints);
+    }
+  }, 1000);
+}
+
+
 
 
   // Format for answers
