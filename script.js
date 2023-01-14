@@ -2,7 +2,7 @@
 var myQuestions = [
   {
     question: "Who is the first boss you fight in Dark Souls 3?",
-    choices: ["Dark Eater Midir", "Ornstein and Smough" , "The Crystal Sage","Ludex Gundyr"],
+    choices: ["Dark Eater Midir", "Ornstein and Smough", "The Crystal Sage", "Ludex Gundyr"],
     answer: "Ludex Gundyr"
   },
   {
@@ -33,7 +33,8 @@ function startGame() {
   generateQuestions();
 }
 
-function generateQuestions() { 
+function generateQuestions() {
+  if (questionsIndex > myQuestions.length - 1) return
   questionsContainer.innerHTML = ''
   var questionList = document.createElement("ul")
   questionsContainer.append(questionList)
@@ -62,34 +63,67 @@ function generateQuestions() {
         // console.log(questionsIndex)
       }
       questionsIndex++
-      if (questionsIndex < myQuestions.length) { 
+      // generateQuestions()
+      if (questionsIndex < myQuestions.length) {
         setTimeout(function () {
-          generateQuestions ();
+          generateQuestions();
         }, 500)
       } else {
-        window.location.assign('./highscores.html')
-        localStorage.setItem('scores', questionPoints);
+        // window.location.assign('./highscores.html')
+
+        // localStorage.setItem('scores', questionPoints);
       }
     })
   }
-  
+
 }
 
 
 var secondsLeft = 45;
 
 function setTime() {
-  var timerInterval = setInterval(function() {
+  var timerInterval = setInterval(function () {
     console.log(secondsLeft)
     secondsLeft--;
     timerContainer.textContent = secondsLeft
 
-    if (secondsLeft <=0) {
+    if (secondsLeft <= 0 || questionsIndex > myQuestions.length - 1) {
       clearInterval(timerInterval);
-      window.location.assign("./highscores.html")
-      localStorage.setItem('scores', questionPoints);
+      // window.location.assign("./highscores.html")
+      // localStorage.setItem('scores', questionPoints);
+      endQuiz()
     }
   }, 1000);
+}
+
+function endQuiz() {
+  questionsContainer.innerHTML = ''
+  var input = document.createElement('input')
+  input.setAttribute('placeholder', 'Name')
+  var endButton = document.createElement('button')
+  endButton.textContent = 'Submit'
+  questionsContainer.append(input, endButton)
+
+  endButton.addEventListener('click', function () {
+
+    var userObj = {
+      name: input.value,
+      score: questionPoints
+    }
+
+    var storage = JSON.parse(localStorage.getItem('scores'))
+
+    if (storage === null) {
+      storage = []
+    }
+
+    storage.push(userObj)
+
+    localStorage.setItem('scores', JSON.stringify(storage))
+
+    window.location.href = 'highscores.html'
+  })
+
 }
 
 
